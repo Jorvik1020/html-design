@@ -44,6 +44,19 @@ Copy `template.html` (same folder) and replace content. It contains all tokens, 
 9. **Motion = reveal only**: opacity + 20px rise, 0.7s ease-out, staggered ≤100ms, on scroll-into-view. Nothing loops, bounces, or parallaxes. Respect `prefers-reduced-motion`.
 10. **The squint test before shipping**: blur your eyes — you should still see the hierarchy (one big thing per screen). Then ask the hostile-critic question: *what is the single ugliest thing here?* Fix it before delivery.
 
+## Brand surface vs product surface — decide FIRST
+
+The template's big-type/whitespace DNA is for **brand surfaces** (decks, landing pages, narratives). A **product surface** (dashboard, tool, report the user works FROM) follows the opposite register — in our test, applying brand rules to a working dashboard cost 1.82× the vertical space and scored worse on all task-fit heuristics:
+
+- Fixed rem scale, ratio ~1.2 (11/13/16/19/28px), no `clamp()`, no display heroes; section headers/subtitles ≥13px in a deep neutral, not weak light-gray small caps
+- Density is a feature: whole artifact ≤2.5 viewports; task content (actions) before context (charts)
+- **Unified palette**: all cards share ONE background (white) on a subtly layered page wash (soft accent glow + very faint grid, masked to fade); semantic state hue appears only at edges — a 6px left border + tinted chip + bullet dots — in DESATURATED dusty tones. Full tinted card backgrounds read cheap and inconsistent.
+- **Depth, not flatness**: data graphics may use same-hue vertical gradients + `filter:drop-shadow` + small segment separation (stacked-plate depth — never multi-hue or PowerPoint-3D); cards get layered elevation (inset top highlight + tight shadow + long soft shadow)
+- **Number-color semantics, page-wide**: blue = fact · green = good signal · amber = watch · red = act today. One logic for every numeral; print the legend in the footer; never color numbers decoratively.
+- **Motion**: fast staggered entrances (.42s, 70ms stagger; in-view content shows instantly), charts draw in level-by-level, big numerals count up slowly (~2.2s ease-out) when their group scrolls into view, and charts may be interactive where it aids the task (click a funnel stage → related metrics spotlight + re-count). Always progressive (no-JS = fully visible), `prefers-reduced-motion` + `beforeprint` safe.
+- Domain conventions beat aesthetic preference: if a domain has a canonical chart form (e.g. sales pipeline = inverted trapezoid funnel), keep the form and restyle it within the system.
+- WCAG AA is part of the system: all text ≥4.5:1 on its actual background; lint deterministically with `npx -y impeccable detect <file>`.
+
 ## Common mistakes (the generic-AI-page tells)
 
 - Purple/blue gradient hero → delete; whitespace + big type is the hero
