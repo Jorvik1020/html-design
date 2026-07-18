@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"><!-- add data-theme="dark" for Linear-dark -->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Design Template</title>
+<style>
+/* ============ TOKENS — extracted live from apple.com + linear.app, 2026-07-17 ============ */
+:root{
+  --bg:#ffffff; --bg-alt:#f5f5f7; --card:#f5f5f7;
+  --ink:#1d1d1f; --ink-2:#6e6e73; --ink-3:#86868b;
+  --accent:#0066cc; --accent-btn:#0071e3; --accent-btn-hover:#0077ed;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Inter","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --w-content:1024px; --w-wide:1260px; --w-prose:700px;
+  --sec:clamp(96px,12vw,160px);            /* section rhythm */
+  --r-card:18px; --r-pill:980px;
+  --wt-display:600; --wt-body:400;
+}
+[data-theme="dark"]{
+  --bg:#08090a; --bg-alt:#0d0e10; --card:#141516;
+  --ink:#f7f8f8; --ink-2:#8a8f98; --ink-3:#62666d;
+  --accent:#7ca6f8; --accent-btn:#5e6ad2; --accent-btn-hover:#6e7ae2;
+  --wt-display:510;
+}
+/* ============ BASE ============ */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);
+  font-size:17px;line-height:1.47;letter-spacing:-.022em;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img,svg,video{max-width:100%;display:block}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ============ TYPE SCALE (5 sizes, 2 weights — rule 2) ============ */
+.t-hero   {font-size:clamp(48px,8.5vw,96px);font-weight:var(--wt-display);line-height:1.05;letter-spacing:-.015em}
+.t-head   {font-size:clamp(32px,5vw,56px);font-weight:var(--wt-display);line-height:1.07;letter-spacing:-.005em}
+.t-sub    {font-size:clamp(21px,2.6vw,28px);font-weight:var(--wt-display);line-height:1.14;letter-spacing:.007em}
+.t-body-l {font-size:21px;font-weight:var(--wt-body);line-height:1.38;letter-spacing:.011em;color:var(--ink-2)}
+.t-caption{font-size:14px;font-weight:var(--wt-body);letter-spacing:-.01em;color:var(--ink-3)}
+.t-eyebrow{font-size:17px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--accent)}
+
+/* ============ LAYOUT ============ */
+section{padding:var(--sec) 22px}
+section.alt{background:var(--bg-alt)}          /* rule 8: alternate bg, never <hr> */
+section.flush{padding-top:0}
+.content{max-width:var(--w-content);margin:0 auto}
+.wide{max-width:var(--w-wide);margin:0 auto}
+.prose{max-width:var(--w-prose)}               /* rule 5: prose column */
+.center{text-align:center}
+.stack-l >*+*{margin-top:28px}
+.stack-m >*+*{margin-top:16px}
+
+/* ============ COMPONENTS ============ */
+/* Primary pill button — ONE per screen (rule 7) */
+.btn{display:inline-block;background:var(--accent-btn);color:#fff;border:0;cursor:pointer;
+  font-family:var(--font);font-size:17px;font-weight:400;letter-spacing:-.022em;
+  padding:12px 24px;border-radius:var(--r-pill)}
+.btn:hover{background:var(--accent-btn-hover);text-decoration:none}
+.link-more{font-size:17px}
+.link-more::after{content:" ›"}
+/* Stat hero (rule 6): 80px value + 19px caption */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:48px}
+.stat-caption{font-size:19px;font-weight:600;letter-spacing:.012em;line-height:1.21}
+.stat-value{font-size:clamp(56px,7vw,80px);font-weight:var(--wt-display);line-height:1;letter-spacing:-.015em;margin:6px 0}
+.stat-note{font-size:19px;font-weight:600;letter-spacing:.012em;color:var(--ink-2)}
+/* Cards: bg tint + radius only — no border+shadow stacking */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.card{background:var(--card);border-radius:var(--r-card);padding:40px 32px}
+.alt .card{background:var(--bg)}   /* cards must contrast their section bg */
+[data-theme="dark"] .card{border:1px solid rgba(255,255,255,.06)}
+[data-theme="dark"] .alt .card{background:var(--card)}
+/* Figure slot for images/diagrams/screenshots */
+.figure{border-radius:var(--r-card);overflow:hidden;background:var(--bg-alt)}
+/* Footnotes */
+footer{padding:48px 22px 64px;}
+footer p{font-size:12px;color:var(--ink-3);max-width:var(--w-content);margin:0 auto;line-height:1.5}
+
+/* ============ MOTION — reveal only (rule 9) ============ */
+.reveal{opacity:0;transform:translateY(20px);
+  transition:opacity .7s cubic-bezier(.25,.1,.25,1),transform .7s cubic-bezier(.25,.1,.25,1)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO: one claim, huge type, whitespace is the hero (rules 1,4) ============ -->
+<section>
+  <div class="content center stack-l">
+    <p class="t-eyebrow reveal">Eyebrow Label</p>
+    <h1 class="t-hero reveal d1">The claim, stated<br>as a headline.</h1>
+    <p class="t-body-l reveal d2" style="max-width:640px;margin-left:auto;margin-right:auto">
+      One supporting sentence. Say what it is and why it matters — nothing else belongs up here.
+    </p>
+    <p class="reveal d3"><a class="btn" href="#">Primary action</a></p>
+  </div>
+</section>
+
+<!-- ============ SECTION: claim headline + prose (rules 1,5) ============ -->
+<section class="alt">
+  <div class="content">
+    <h2 class="t-head reveal">Each section makes<br>exactly one point.</h2>
+    <div class="prose stack-m" style="margin-top:32px">
+      <p class="t-body-l reveal d1">The headline is the claim; the body earns it. Keep the column at prose width and left-aligned — centering is only for text of two lines or fewer.</p>
+      <p class="reveal d2"><a class="link-more" href="#">Learn more</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS: numbers are heroes (rule 6) ============ -->
+<section>
+  <div class="content">
+    <h2 class="t-head center reveal">Proof, at 80&nbsp;pixels.</h2>
+    <div class="stats center" style="margin-top:72px">
+      <div class="reveal d1"><p class="stat-caption">Removes up to</p><p class="stat-value">2x more</p><p class="stat-note">noise than before</p></div>
+      <div class="reveal d2"><p class="stat-caption">Reply rate</p><p class="stat-value">50%</p><p class="stat-note">up from 10%</p></div>
+      <div class="reveal d3"><p class="stat-caption">Runs</p><p class="stat-value">24/7</p><p class="stat-note">while you sleep</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CARDS: tint + radius only ============ -->
+<section class="alt">
+  <div class="wide">
+    <h2 class="t-head reveal">Two ideas, two cards.<br>Never six.</h2>
+    <div class="cards" style="margin-top:56px">
+      <div class="card stack-m reveal d1">
+        <h3 class="t-sub">Card headline.</h3>
+        <p style="color:var(--ink-2)">A card holds one bounded idea. Background tint and radius do all the work — no borders, no shadows, no icons unless they carry meaning.</p>
+      </div>
+      <div class="card stack-m reveal d2">
+        <h3 class="t-sub">Second headline.</h3>
+        <p style="color:var(--ink-2)">If a third card feels necessary, it probably wants to be its own section with its own claim.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Footnotes and small print live here at 12px. Template distilled from live teardowns of apple.com and linear.app, 2026-07-17. Swap to dark: add data-theme="dark" to &lt;html&gt;.</p>
+</footer>
+
+<script>
+/* Scroll reveal — elements already in view reveal instantly (robust for headless/PDF/print);
+   only below-the-fold elements animate in via IntersectionObserver. Fires once. */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>{
+  if(el.getBoundingClientRect().top<innerHeight) el.classList.add('in');
+  else io.observe(el);
+});
+window.addEventListener('beforeprint',()=>document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in')));
+</script>
+</body>
+</html>
