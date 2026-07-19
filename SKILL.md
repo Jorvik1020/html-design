@@ -57,6 +57,46 @@ The template's big-type/whitespace DNA is for **brand surfaces** (decks, landing
 - Domain conventions beat aesthetic preference: if a domain has a canonical chart form (e.g. sales pipeline = inverted trapezoid funnel), keep the form and restyle it within the system.
 - WCAG AA is part of the system: all text ≥4.5:1 on its actual background; lint deterministically with `npx -y impeccable detect <file>`.
 
+## Real-paper background (brand surfaces)
+
+Flat white/gray backgrounds read monotonous. The fix is a **paper material layer**, not stronger decoration — and true paper feel comes from **lighting** (SVG relief), not flat noise. Key lesson: `feTurbulence type='turbulence'` reads as marble; use `fractalNoise` for pulp.
+
+The stack (bottom→top): ① vertical wash gradient ② one or two soft accent radial glows ③ **relief-lit paper** (noise as a bump map into `feDiffuseLighting`, tiled, multiplied) ④ soft pulp clouds ⑤ sparse flecks ⑥ optional faint grid on `::before`, masked to fade down (paper stays uniform; grid fades).
+
+```css
+background:
+  url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='480' height='480'><filter id='p' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='5' stitchTiles='stitch' result='n'/><feDiffuseLighting in='n' lighting-color='%23ffffff' surfaceScale='1.5' diffuseConstant='1.05'><feDistantLight azimuth='235' elevation='58'/></feDiffuseLighting></filter><rect width='100%25' height='100%25' filter='url(%23p)' opacity='0.45'/></svg>") repeat,
+  url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='900' height='900'><filter id='m'><feTurbulence type='fractalNoise' baseFrequency='0.007' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23m)' opacity='0.07'/></svg>") repeat,
+  url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='s'><feTurbulence type='fractalNoise' baseFrequency='0.45' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='discrete' tableValues='0 0 0 0 0 0 0 0 0 0.55'/></feComponentTransfer></filter><rect width='100%25' height='100%25' filter='url(%23s)' opacity='0.05'/></svg>") repeat,
+  radial-gradient(1100px 560px at 10% -8%, rgba(0,102,204,.10), transparent 62%),
+  radial-gradient(820px 460px at 96% 4%, rgba(64,100,160,.07), transparent 62%),
+  linear-gradient(180deg,#ffffff 0%,#f5f7fa 100%);
+background-size:480px 480px,900px 900px,320px 320px,auto,auto,auto;
+background-blend-mode:multiply,multiply,multiply,normal,normal,normal;
+```
+
+Knobs: `baseFrequency 0.04` (higher = finer tooth) · `surfaceScale 1.5` (bump depth) · relief `opacity 0.45` (strength). Keep the color system cool — never let the paper drift warm/beige even when a warm reference photo is supplied. Cards sitting on paper are **white everywhere** (drop the white/gray card alternation); layered elevation carries the contrast.
+
+## Slide-deck register (structure)
+
+The presentation form of the system:
+- **Paged slides**: `.slide{position:absolute;inset:0}` + an `.active` class toggling opacity/visibility; a 2px top progress bar (animate `transform:scaleX`, never `width`); arrow keys / space / PgUp / PgDn / Home / End + touch swipe; deep links via `#n`; print = `position:relative` + `page-break-after` with a landscape `@page`; small screens fall back to vertical scroll.
+- **Per-slide reveal**: scope the template's reveal system to `.slide.active` so each slide replays its entrance when entered.
+- **Equal-geometry locks**: `.cards{align-items:stretch;grid-auto-rows:1fr}` with columns `repeat(3,minmax(0,1fr))` — `minmax(0,1fr)` is mandatory: a `white-space:nowrap` line otherwise silently widens its column. Equal card sizes are a hard rule.
+- **Bilingual lockup** (optional): primary-language headline + secondary-language subtitle as a `display:block` span at `.56em`, muted ink, 12px top margin; cards open with a short keyword lead line. Keyword-capitalize titles and sublabels.
+- **Don't double-list**: if a visual (badges, chips, diagram) enumerates items, the adjacent text must not repeat the list — one lead line and a pointer instead.
+- **Live-artifact embed**: a slide may iframe a live page (fixed height, radius, elevation, scrollable). Single-source rule: numbers shown elsewhere in the deck must match the embedded artifact — refresh the artifact, never fork the numbers.
+
+## Annotation system + honest-claims harness
+
+**Asterisk annotations**: any stat, claim, or headline word needing qualification gets a trailing `*` (muted, not accent). ALL asterisk notes collect into ONE block: bottom-left, caption size, `line-height:2`, each note on its own line prefixed `*`, ordered by where their markers appear. The block's left edge aligns with the CONTENT BODY's visible left edge (e.g. the first big stat numeral), not the page margin — and stays clearly separated from both content and footer. Annotations stay out of the body (the body stays the hero) but remain findable in one place.
+
+**Honest-claims harness** (what makes numbers defensible in front of a tough audience):
+- **Measure, don't estimate.** If a number can be computed from logs/records, compute it and be ready to show the method.
+- **Pair hero metrics with a reference class.** A conversion or performance number is meaningless alone; add a benchmark annotation line (`*Benchmark: industry range X–Y% …`) so the reader can place it.
+- **Keep the zero visible.** An honest "0 so far" out-converts hype with any experienced audience.
+- **Claim language must match the system.** If humans gate the sends, say "autonomous-first, human-gated" — an absolute like "100% auto" contradicts the harness and invites the attack.
+
 ## Common mistakes (the generic-AI-page tells)
 
 - Purple/blue gradient hero → delete; whitespace + big type is the hero
