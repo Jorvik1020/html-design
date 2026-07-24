@@ -24,7 +24,6 @@
 }
 /* ============ BASE ============ */
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--ink);
   font-size:17px;line-height:1.47;letter-spacing:-.022em;
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
@@ -75,13 +74,6 @@ section.flush{padding-top:0}
 /* Footnotes */
 footer{padding:48px 22px 64px;}
 footer p{font-size:12px;color:var(--ink-3);max-width:var(--w-content);margin:0 auto;line-height:1.5}
-
-/* ============ MOTION — reveal only (rule 9) ============ */
-.reveal{opacity:0;transform:translateY(20px);
-  transition:opacity .7s cubic-bezier(.25,.1,.25,1),transform .7s cubic-bezier(.25,.1,.25,1)}
-.reveal.in{opacity:1;transform:none}
-.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
-@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 </style>
 </head>
 <body>
@@ -89,22 +81,22 @@ footer p{font-size:12px;color:var(--ink-3);max-width:var(--w-content);margin:0 a
 <!-- ============ HERO: one claim, huge type, whitespace is the hero (rules 1,4) ============ -->
 <section>
   <div class="content center stack-l">
-    <p class="t-eyebrow reveal">Eyebrow Label</p>
-    <h1 class="t-hero reveal d1">The claim, stated<br>as a headline.</h1>
-    <p class="t-body-l reveal d2" style="max-width:640px;margin-left:auto;margin-right:auto">
+    <p class="t-eyebrow">Eyebrow Label</p>
+    <h1 class="t-hero">The claim, stated<br>as a headline.</h1>
+    <p class="t-body-l" style="max-width:640px;margin-left:auto;margin-right:auto">
       One supporting sentence. Say what it is and why it matters — nothing else belongs up here.
     </p>
-    <p class="reveal d3"><a class="btn" href="#">Primary action</a></p>
+    <p><a class="btn" href="#">Primary action</a></p>
   </div>
 </section>
 
 <!-- ============ SECTION: claim headline + prose (rules 1,5) ============ -->
 <section class="alt">
   <div class="content">
-    <h2 class="t-head reveal">Each section makes<br>exactly one point.</h2>
+    <h2 class="t-head">Each section makes<br>exactly one point.</h2>
     <div class="prose stack-m" style="margin-top:32px">
-      <p class="t-body-l reveal d1">The headline is the claim; the body earns it. Keep the column at prose width and left-aligned — centering is only for text of two lines or fewer.</p>
-      <p class="reveal d2"><a class="link-more" href="#">Learn more</a></p>
+      <p class="t-body-l">The headline is the claim; the body earns it. Keep the column at prose width and left-aligned — centering is only for text of two lines or fewer.</p>
+      <p><a class="link-more" href="#">Learn more</a></p>
     </div>
   </div>
 </section>
@@ -112,11 +104,11 @@ footer p{font-size:12px;color:var(--ink-3);max-width:var(--w-content);margin:0 a
 <!-- ============ STATS: numbers are heroes (rule 6) ============ -->
 <section>
   <div class="content">
-    <h2 class="t-head center reveal">Proof, at 80&nbsp;pixels.</h2>
+    <h2 class="t-head center">Proof, at 80&nbsp;pixels.</h2>
     <div class="stats center" style="margin-top:72px">
-      <div class="reveal d1"><p class="stat-caption">Removes up to</p><p class="stat-value">2x more</p><p class="stat-note">noise than before</p></div>
-      <div class="reveal d2"><p class="stat-caption">Reply rate</p><p class="stat-value">50%</p><p class="stat-note">up from 10%</p></div>
-      <div class="reveal d3"><p class="stat-caption">Runs</p><p class="stat-value">24/7</p><p class="stat-note">while you sleep</p></div>
+      <div><p class="stat-caption">Removes up to</p><p class="stat-value">2x more</p><p class="stat-note">noise than before</p></div>
+      <div><p class="stat-caption">Reply rate</p><p class="stat-value">50%</p><p class="stat-note">up from 10%</p></div>
+      <div><p class="stat-caption">Runs</p><p class="stat-value">24/7</p><p class="stat-note">while you sleep</p></div>
     </div>
   </div>
 </section>
@@ -124,13 +116,13 @@ footer p{font-size:12px;color:var(--ink-3);max-width:var(--w-content);margin:0 a
 <!-- ============ CARDS: tint + radius only ============ -->
 <section class="alt">
   <div class="wide">
-    <h2 class="t-head reveal">Two ideas, two cards.<br>Never six.</h2>
+    <h2 class="t-head">Two ideas, two cards.<br>Never six.</h2>
     <div class="cards" style="margin-top:56px">
-      <div class="card stack-m reveal d1">
+      <div class="card stack-m">
         <h3 class="t-sub">Card headline.</h3>
         <p style="color:var(--ink-2)">A card holds one bounded idea. Background tint and radius do all the work — no borders, no shadows, no icons unless they carry meaning.</p>
       </div>
-      <div class="card stack-m reveal d2">
+      <div class="card stack-m">
         <h3 class="t-sub">Second headline.</h3>
         <p style="color:var(--ink-2)">If a third card feels necessary, it probably wants to be its own section with its own claim.</p>
       </div>
@@ -139,18 +131,8 @@ footer p{font-size:12px;color:var(--ink-3);max-width:var(--w-content);margin:0 a
 </section>
 
 <footer>
-  <p>Footnotes and small print live here at 12px. Template distilled from live teardowns of apple.com and linear.app, 2026-07-17. Swap to dark: add data-theme="dark" to &lt;html&gt;.</p>
+  <p>Footnotes and small print live here at 12px. Template distilled from live teardowns of apple.com and linear.app, 2026-07-17. Swap to dark: add data-theme="dark" to &lt;html&gt;. This edition is fully static — no scripts, no animation.</p>
 </footer>
 
-<script>
-/* Scroll reveal — elements already in view reveal instantly (robust for headless/PDF/print);
-   only below-the-fold elements animate in via IntersectionObserver. Fires once. */
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
-document.querySelectorAll('.reveal').forEach(el=>{
-  if(el.getBoundingClientRect().top<innerHeight) el.classList.add('in');
-  else io.observe(el);
-});
-window.addEventListener('beforeprint',()=>document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in')));
-</script>
 </body>
 </html>

@@ -16,7 +16,7 @@ Instead of letting a model improvise CSS (the purple-gradient-hero look), this s
 ```
 SKILL.md        # the doctrine: token tables + ten rules + common mistakes
 template.html   # working starter page — hero, claim sections, stat heroes,
-                # cards, scroll-reveal (reduced-motion & print/headless safe)
+                # cards; fully static (no scripts, no animation — print/headless safe)
 ```
 
 ## Use it
@@ -27,7 +27,7 @@ template.html   # working starter page — hero, claim sections, stat heroes,
 
 ## The one-sentence philosophy
 
-> The design IS the type scale and the whitespace. Color, decoration, and motion are condiments.
+> The design IS the type scale and the whitespace. Color and decoration are condiments.
 
 ## License
 

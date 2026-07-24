@@ -9,11 +9,13 @@ description: Use when building ANY HTML page, deck, artifact, landing page, repo
 
 Design system distilled from **live computed-style teardowns** of apple.com/airpods-pro and linear.app — real extracted numbers, not folklore. Two themes: **Apple-light** (default, for decks/briefs/reports) and **Linear-dark** (`data-theme="dark"`, for technical/product pages).
 
-**Core principle: the design IS the type scale and the whitespace. Color, decoration, and motion are condiments.**
+**Core principle: the design IS the type scale and the whitespace. Color and decoration are condiments.**
+
+**This edition ships fully static** — no scripts, no entrance animation, no loops. Every rule below assumes the page must carry itself with type, spacing, and color alone.
 
 ## Start here
 
-Copy `template.html` (same folder) and replace content. It contains all tokens, both themes, every component, and the scroll-reveal system. Do NOT write page CSS from scratch.
+Copy `template.html` (same folder) and replace content. It contains all tokens, both themes, and every component — static, script-free, print/headless safe. Do NOT write page CSS from scratch.
 
 ## The extracted DNA (quick reference)
 
@@ -41,7 +43,7 @@ Copy `template.html` (same folder) and replace content. It contains all tokens, 
 6. **Numbers are heroes**: any stat gets the 80px treatment with a 19px caption ("2x more" / "Active Noise Cancellation").
 7. **One primary button per screen**, pill-shaped. Secondary actions are plain accent-colored text links ("Learn more >").
 8. **Alternate section backgrounds** (white/#f5f5f7) instead of divider lines. Never use `<hr>`.
-9. **Motion = reveal only**: opacity + 20px rise, 0.7s ease-out, staggered ≤100ms, on scroll-into-view. Nothing loops, bounces, or parallaxes. Respect `prefers-reduced-motion`.
+9. **Ship static.** No entrance choreography, no loops, no parallax, no scroll effects. A page that needs motion to look alive has a hierarchy problem, not a motion deficit — fix the type and spacing instead.
 10. **The squint test before shipping**: blur your eyes — you should still see the hierarchy (one big thing per screen). Then ask the hostile-critic question: *what is the single ugliest thing here?* Fix it before delivery.
 
 ## Brand surface vs product surface — decide FIRST
@@ -50,10 +52,10 @@ The template's big-type/whitespace DNA is for **brand surfaces** (decks, landing
 
 - Fixed rem scale, ratio ~1.2 (11/13/16/19/28px), no `clamp()`, no display heroes; section headers/subtitles ≥13px in a deep neutral, not weak light-gray small caps
 - Density is a feature: whole artifact ≤2.5 viewports; task content (actions) before context (charts)
+- **No load choreography**: a product surface loads into a task — everything visible instantly; interactivity is navigation and filtering, never decoration
 - **Unified palette**: all cards share ONE background (white) on a subtly layered page wash (soft accent glow + very faint grid, masked to fade); semantic state hue appears only at edges — a 6px left border + tinted chip + bullet dots — in DESATURATED dusty tones. Full tinted card backgrounds read cheap and inconsistent.
 - **Depth, not flatness**: data graphics may use same-hue vertical gradients + `filter:drop-shadow` + small segment separation (stacked-plate depth — never multi-hue or PowerPoint-3D); cards get layered elevation (inset top highlight + tight shadow + long soft shadow)
 - **Number-color semantics, page-wide**: blue = fact · green = good signal · amber = watch · red = act today. One logic for every numeral; print the legend in the footer; never color numbers decoratively.
-- **Motion**: fast staggered entrances (.42s, 70ms stagger; in-view content shows instantly), charts draw in level-by-level, big numerals count up slowly (~2.2s ease-out) when their group scrolls into view, and charts may be interactive where it aids the task (click a funnel stage → related metrics spotlight + re-count). Always progressive (no-JS = fully visible), `prefers-reduced-motion` + `beforeprint` safe.
 - Domain conventions beat aesthetic preference: if a domain has a canonical chart form (e.g. sales pipeline = inverted trapezoid funnel), keep the form and restyle it within the system.
 - WCAG AA is part of the system: all text ≥4.5:1 on its actual background; lint deterministically with `npx -y impeccable detect <file>`.
 
@@ -79,13 +81,20 @@ Knobs: `baseFrequency 0.04` (higher = finer tooth) · `surfaceScale 1.5` (bump d
 
 ## Slide-deck register (structure)
 
-The presentation form of the system:
-- **Paged slides**: `.slide{position:absolute;inset:0}` + an `.active` class toggling opacity/visibility; a 2px top progress bar (animate `transform:scaleX`, never `width`); arrow keys / space / PgUp / PgDn / Home / End + touch swipe; deep links via `#n`; print = `position:relative` + `page-break-after` with a landscape `@page`; small screens fall back to vertical scroll.
-- **Per-slide reveal**: scope the template's reveal system to `.slide.active` so each slide replays its entrance when entered.
+The presentation form of the system — all state changes are instant (show/hide), never animated:
+- **Paged slides**: `.slide{position:absolute;inset:0}` + an `.active` class toggling visibility instantly; a 2px top progress bar sized per slide; arrow keys / space / PgUp / PgDn / Home / End + touch swipe; deep links via `#n`; print = `position:relative` + `page-break-after` with a landscape `@page`; small screens fall back to vertical scroll.
 - **Equal-geometry locks**: `.cards{align-items:stretch;grid-auto-rows:1fr}` with columns `repeat(3,minmax(0,1fr))` — `minmax(0,1fr)` is mandatory: a `white-space:nowrap` line otherwise silently widens its column. Equal card sizes are a hard rule.
-- **Bilingual lockup** (optional): primary-language headline + secondary-language subtitle as a `display:block` span at `.56em`, muted ink, 12px top margin; cards open with a short keyword lead line. Keyword-capitalize titles and sublabels.
+- **Bilingual lockup** (optional): primary-language headline + secondary-language subtitle as a `display:block` span at `.56em`, muted ink, 12px top margin; cards open with a short keyword lead line. Keyword-capitalize titles and sublabels. When a caption pairs two languages, break the second language onto its own line rather than joining with a separator — mixed-script lines wrap mid-phrase at narrow widths.
+- **Flow diagrams (SVG), static**: white pill nodes (rx = half height) with per-node `feDropShadow`, cool desaturated strokes, ONE accent hue; connectors dotted (`stroke-dasharray:1 7`, round caps); a domain funnel may embed inside the core node (opacity ladder + stage labels); the caption is one line of caption-size text below the white container, never inside the SVG.
+- **Brand/logo badges**: white chips (radius 12, card elevation), 24px rounded official logo + brand-color wordmark. Source logos from GitHub org avatars (`github.com/<org>.png`) first but VERIFY visually — fake/fan orgs exist; fall back to the official site's favicon/webclip, and confirm identity via the page `<title>`. Never substitute a parent company's mark. The badge cluster sits close to the text it illustrates, not flush to a far edge.
 - **Don't double-list**: if a visual (badges, chips, diagram) enumerates items, the adjacent text must not repeat the list — one lead line and a pointer instead.
 - **Live-artifact embed**: a slide may iframe a live page (fixed height, radius, elevation, scrollable). Single-source rule: numbers shown elsewhere in the deck must match the embedded artifact — refresh the artifact, never fork the numbers.
+
+## Artifact families + screenshot sanitization
+
+When one artifact must serve multiple audiences, never let a single file quietly serve them all. **Fork explicitly**, same folder, bracketed suffixes — `[Private]` (full detail, operator's copy), `[Public]` (external eyes: names, deal terms, live actions removed), `[Internal]` (method visible, sensitive specifics withheld — and the withholding itself is not announced on the page). All versions share one assets folder; numbers must stay identical across versions (single-source rule).
+
+**Blur-sanitizing a dashboard screenshot** (beats cropping): take the FULL-page 2× screenshot so structure and depth stay visible, then Gaussian-blur exactly the sensitive regions (names, terms, action lists) while aggregates, funnels and headers stay sharp. Pre-swap any identifying string embedded in a sharp region via a temp copy of the HTML before shooting. Present the result in a fixed-height scrollable container — the blurred zones read as "real operations, withheld," which is more credible than absence. Caption: max two clauses (what's blurred · where the numbers come from).
 
 ## Annotation system + honest-claims harness
 
@@ -96,6 +105,7 @@ The presentation form of the system:
 - **Pair hero metrics with a reference class.** A conversion or performance number is meaningless alone; add a benchmark annotation line (`*Benchmark: industry range X–Y% …`) so the reader can place it.
 - **Keep the zero visible.** An honest "0 so far" out-converts hype with any experienced audience.
 - **Claim language must match the system.** If humans gate the sends, say "autonomous-first, human-gated" — an absolute like "100% auto" contradicts the harness and invites the attack.
+- **Derived numbers must chain.** If phase targets ladder up (4 units × ~$X + channel ~$Y = headline), make each phase's math derive the next phase's inputs — reviewers check the joints, not the totals.
 
 ## Common mistakes (the generic-AI-page tells)
 
@@ -105,3 +115,4 @@ The presentation form of the system:
 - Emoji as icons in headings → remove
 - Centered long paragraphs → center only ≤2-line text; prose is left-aligned
 - Cramped 60–80px sections → 160px; scrolling is free, clutter is not
+- Entrance animations to add "polish" → this edition ships static; polish is spacing
