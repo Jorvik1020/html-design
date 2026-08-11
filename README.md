@@ -14,10 +14,13 @@ Instead of letting a model improvise CSS (the purple-gradient-hero look), this s
 ## What's inside
 
 ```
-SKILL.md        # the doctrine: token tables + ten rules + common mistakes
+SKILL.md        # the doctrine: token tables, ten rules, two deck registers,
+                # density + change-safety contract, portability, common mistakes
 template.html   # working starter page — hero, claim sections, stat heroes,
                 # cards; fully static (no scripts, no animation — print/headless safe)
 ```
+
+Also covered: choosing between a **reflowing viewport deck** and a **fixed 1920×1080 stage**, working inside someone else's **corporate brand system**, and the **portability rule** that stops shared HTML arriving with broken images.
 
 ## Use it
 

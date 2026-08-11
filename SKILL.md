@@ -90,6 +90,94 @@ The presentation form of the system — all state changes are instant (show/hide
 - **Don't double-list**: if a visual (badges, chips, diagram) enumerates items, the adjacent text must not repeat the list — one lead line and a pointer instead.
 - **Live-artifact embed**: a slide may iframe a live page (fixed height, radius, elevation, scrollable). Single-source rule: numbers shown elsewhere in the deck must match the embedded artifact — refresh the artifact, never fork the numbers.
 
+## Fixed-stage deck register (1920×1080)
+
+There are two deck architectures. Choose deliberately.
+
+| | **Viewport register** (the slide register above) | **Fixed-stage register** |
+|---|---|---|
+| Sizing | `vh`/`vw` + `clamp()`, reflows per screen | one 1920×1080 canvas, scaled as a whole |
+| Wins | adapts to odd windows, long text breathes | pixel-exact fidelity: what you author is what projects |
+| Costs | line counts shift between laptop and projector | overflow is yours to solve, no reflow rescue |
+| Use for | reading decks, briefs, artifacts opened in a browser | anything projected or exported to PDF |
+
+Prefer fixed-stage when the deck will be **presented or exported**; keep the viewport register for read-in-a-tab artifacts.
+
+**The invariants (all mandatory in this register):**
+- A viewport wrapper fills the window; the stage is `width:1920px;height:1080px;transform-origin:0 0`, scaled by `Math.min(innerWidth/1920, innerHeight/1080)` and centred with a translate. Letterbox/pillarbox is correct; re-layout is not.
+- Author every internal measurement at the 1920×1080 design size. **No responsive breakpoints rearranging slide content**, including on phones.
+- ⚠️ **Toggle slides with `visibility` + `opacity` + `pointer-events`, NEVER `display:none`/`block`.** A later layout rule such as `.slide-content{display:flex}` overrides the toggle and every slide renders at once. Silent and total.
+- ⚠️ **Never negate a CSS function** — `-clamp()`, `-min()`, `-max()` are silently ignored. Write `calc(-1 * clamp(...))`.
+- `clamp()` belongs only to chrome *outside* the stage, never to slide content.
+- Print block: slides become `position:relative` with `break-after:page`.
+
+Static-edition note: the single permitted script is the resize handler that sets the scale factor. That is layout, not motion — state changes stay instant and nothing animates.
+
+## Corporate brand register (working inside someone else's design system)
+
+When the artifact ships under a client's or employer's brand, their system outranks this one. Do not approximate it from memory.
+
+**Extract it live.** Open the brand's own site and read computed styles for: body and heading font stacks, heading weight and letter-spacing, true ink color, accent fill vs accent link (often two different values), card radius, card shadow, and section background colors. Ten minutes of measurement beats an afternoon of guessing, and it produces numbers you can defend.
+
+**What usually separates a corporate system from this house style:**
+- Heading weight is often **700 with normal letter-spacing**, not 600 with negative tracking. Negative tracking on a bold corporate headline is the single loudest tell that you styled it from habit.
+- Ink is frequently **true black**, not a warm near-black.
+- Radius is small (**8px or flat 0**), not 18px, and shadows are tighter and cooler.
+- The palette is usually **white canvas with a pale tint for information surfaces**, plus one deep panel for a single emphasis band per page.
+
+**Rules that keep it authentic:**
+- **White canvas everywhere, covers and closings included.** A full-accent cover is the tell of a generic template.
+- Category labels small, uppercase, tracked, in the brand accent. Titles large, bold, left-aligned.
+- **Flat rectangles and pale information surfaces** beat rounded UI cards. Pale hierarchy, never saturated-dark blocks.
+- Vary composition by narrative role. Repeating one card grid down the whole deck is the failure mode.
+- Icons small and functional; screenshots are **evidence, not decoration**.
+- Avoid: persistent header/footer furniture, dashboard density on a narrative page, decorative gradients and abstract blobs, tiny text used to force content into the wrong layout.
+
+**Font doctrine conflict, resolved:** general "never use system fonts, never Inter or Arial" advice does not apply inside a brand system where those faces *are* the authentic voice. Reach for distinctive display faces only on surfaces that belong to neither a corporate system nor this house style.
+
+## Deck density and change-safety contract
+
+**Pick a density mode before authoring, and state which you picked:**
+
+| Mode | For | Behaviour |
+|---|---|---|
+| **Speaker-led (low)** | live talks, a room you are presenting to | one idea per slide, large type, 1-3 bullets, generous space, more slides if needed |
+| **Reading-first (high)** | handouts, async circulation, documents people scroll alone | self-contained slides, structured grids and tables, 4-8 bullets or 4-6 cards, tighter but still deliberate |
+
+Mixed signals resolve to the nearer mode, never a mushy middle: live persuasion → speaker-led; circulated afterwards → reading-first. **If content exceeds the mode, split into more slides. Never shrink type to fit.**
+
+**Before modifying an existing deck**, count what is already on the slide against the density limit. Adding an image to a full slide means moving content out or splitting the slide, not squeezing.
+
+**After ANY change, verify by rendering — not by reading the diff.** Check that no text overflows its container, no panels overlap (grid children can visually cover each other while `scrollHeight` still reports clean), titles do not wrap unexpectedly, and the stage is still 16:9. Reorganise proactively and say that you did; do not wait to be asked.
+
+**Authenticity is non-negotiable.** No fabricated product screenshots, no `<div>`-built fake UI, no invented or pseudo-official marks. Real capture, real asset, or leave the slot empty and say so.
+
+## Portability: inline every asset before a file leaves the machine
+
+A page that references `src="assets/logo.png"` renders perfectly on the machine that authored it, because the folder sits next door, and shows a broken-image icon the moment the file is shared on its own. **Relative asset paths are a local convenience and a shipping defect.**
+
+**The rule.** If an artifact will ever be sent — email, chat, a shared drive, an upload, a handover — it ships as ONE self-contained `.html` with every image, icon and font embedded as a `data:` URI. Keep the loose assets folder as the working source; inline as the last step before sending.
+
+```python
+import base64, os, re
+p = "Deck.html"; s = open(p).read()
+for r in sorted(set(re.findall(r'src="((?!data:)[^"]+)"', s))):
+    assert os.path.exists(r), "missing asset: " + r
+    ext  = os.path.splitext(r)[1].lstrip(".").lower()
+    mime = {"png":"image/png","jpg":"image/jpeg","jpeg":"image/jpeg","svg":"image/svg+xml",
+            "gif":"image/gif","webp":"image/webp"}.get(ext, "image/" + ext)
+    s = s.replace('src="%s"' % r, 'src="data:%s;base64,%s"'
+                  % (mime, base64.b64encode(open(r, "rb").read()).decode()))
+open(p, "w").write(s)
+print("remaining external:", re.findall(r'src="(?!data:)([^"]+)"', s))   # must be []
+```
+
+**Verification is a copy test, never a local eyeball.** "It renders fine here" proves nothing while the folder is still next door. Copy the file ALONE into an empty directory and render THAT.
+
+**Size guidance.** Base64 costs ~33% over raw bytes. Logos and icons are free; full-page screenshots are not. Under ~2 MB inline without thinking; 2–10 MB inline but downscale first (JPEG for photographic captures, PNG where UI text must stay crisp); over ~10 MB, stop and ask — zipping the folder or hosting the images may serve the recipient better than a file their mail gateway will bounce.
+
+Some publishing targets enforce a strict content-security policy that blocks every external host, so the same inlining is mandatory there for a different reason.
+
 ## Artifact families + screenshot sanitization
 
 When one artifact must serve multiple audiences, never let a single file quietly serve them all. **Fork explicitly**, same folder, bracketed suffixes — `[Private]` (full detail, operator's copy), `[Public]` (external eyes: names, deal terms, live actions removed), `[Internal]` (method visible, sensitive specifics withheld — and the withholding itself is not announced on the page). All versions share one assets folder; numbers must stay identical across versions (single-source rule).
