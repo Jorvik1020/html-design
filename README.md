@@ -18,6 +18,10 @@ SKILL.md        # the doctrine: token tables, ten rules, two deck registers,
                 # density + change-safety contract, portability, common mistakes
 template.html   # working starter page — hero, claim sections, stat heroes,
                 # cards; fully static (no scripts, no animation — print/headless safe)
+references/
+  review-board.md   # register for shareable review boards: coloured auto-hiding left rail,
+                    # trapezoid funnel, chips, tabs + pills, per-reviewer review cells
+  review-board.css  # its stylesheet (light + blue-grey dark), copy whole
 ```
 
 Also covered: choosing between a **reflowing viewport deck** and a **fixed 1920×1080 stage**, working inside someone else's **corporate brand system**, and the **portability rule** that stops shared HTML arriving with broken images.

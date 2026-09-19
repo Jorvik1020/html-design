@@ -59,6 +59,20 @@ The template's big-type/whitespace DNA is for **brand surfaces** (decks, landing
 - Domain conventions beat aesthetic preference: if a domain has a canonical chart form (e.g. sales pipeline = inverted trapezoid funnel), keep the form and restyle it within the system.
 - WCAG AA is part of the system: all text ≥4.5:1 on its actual background; lint deterministically with `npx -y impeccable detect <file>`.
 
+## Review-board register
+
+For a shareable board people review and operate (funnel summary + prioritised briefing + categorised record tables with per-reviewer marks + a pipeline table). Full spec: `references/review-board.md`; stylesheet to copy whole: `references/review-board.css`. The settings that matter most:
+
+- **Left rail in its own colour** (`--rail #1f3a5f` light / `#1b2a40` dark), **auto-hiding**: 52px strip of initial tiles, opens to 168px on hover/focus as an overlay (no reflow), a pin keeps it open and shifts the content, scroll highlight, sticky top bar under 1000px.
+- **Funnel = inverted trapezoid**, one hue on an opacity ladder, the last band (north star) in `--act` red; bands are keyboard-reachable buttons that filter the table below. A conversion strip sits under it; a zero north-star rate gets the single red alert cell.
+- **Briefing** in three blocks (P0 act now / P1 this week / P2 keep warm), each line "**subject** what happened → next action", computed from data.
+- **Chips, one meaning per hue**: P0/Act now red, P1 amber, P2 blue-teal, P3/Waiting/Held neutral (Held struck through), New slate-blue, Approved green.
+- **≤4 main tabs + sub-category pills** (never a second tab row); category names from published standards (Salesforce Account Type / Industry, analyst and G2 categories), never invented, sources listed in a collapsed block.
+- **Review cells collapse** to a one-line summary + Review button; per-reviewer marks; disabled controls are real `button[disabled]` with the reason shown.
+- **Dark theme is blue-grey** (`#0d1420` / `#151f2c`), every colour a variable defined in all three theme blocks, the board carries its own audited stylesheet.
+- Nothing under 12px; tables scroll in their own wrapper; in-table multi-select menus open upward on the last rows.
+- A spreadsheet twin uses the same palette: `#1F3A5F` headers, a second header colour for hand-edited columns that survive rebuilds, chips as conditional formats.
+
 ## Real-paper background (brand surfaces)
 
 Flat white/gray backgrounds read monotonous. The fix is a **paper material layer**, not stronger decoration — and true paper feel comes from **lighting** (SVG relief), not flat noise. Key lesson: `feTurbulence type='turbulence'` reads as marble; use `fractalNoise` for pulp.
